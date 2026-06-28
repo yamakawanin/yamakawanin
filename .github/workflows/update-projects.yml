@@ -8,14 +8,17 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: update-profile-readme
+  cancel-in-progress: true
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
+      # v4 pinned to an immutable commit to reduce supply-chain risk.
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Refresh README
         env:
           PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
