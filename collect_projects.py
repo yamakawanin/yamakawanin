@@ -56,11 +56,18 @@ def api_get(url: str, token: str) -> list[dict]:
 
 def fetch_repositories(config: dict) -> list[dict]:
     username = config["github_username"]
-    token = os.environ.get("PROFILE_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+    profile_token = os.environ.get("PROFILE_TOKEN", "")
+    token = profile_token or os.environ.get("GITHUB_TOKEN", "")
+    if config.get("include_private", False) and not profile_token:
+        raise SystemExit(
+            "已启用私有项目，但缺少 PROFILE_TOKEN。"
+            "请在 GitHub Actions Secrets 中配置后重新运行工作流；"
+            "为避免生成不完整列表，本次未更新 README。"
+        )
     # A personal token can include private repositories when explicitly enabled.
     # GitHub Actions' built-in token is repository-scoped, so public indexes must
     # keep using the account endpoint even when that token is present.
-    if token and config.get("include_private", False):
+    if profile_token and config.get("include_private", False):
         base = "https://api.github.com/user/repos?affiliation=owner"
     else:
         base = f"https://api.github.com/users/{username}/repos?"
