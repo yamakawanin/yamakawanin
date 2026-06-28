@@ -5,11 +5,11 @@
 ## 我的项目
 
 <!-- PROJECTS:START -->
-_自动收集 7 个 GitHub 项目；最后更新：2026-06-29 00:51 CST_
+_自动收集 7 个 GitHub 项目；最后更新：2026-06-29 00:52 CST_
 
 | 项目 | 技术 | 简介 |
 | --- | --- | --- |
-| [yamakawanin](https://github.com/yamakawanin/yamakawanin) | — | 暂无简介 |
+| [yamakawanin](https://github.com/yamakawanin/yamakawanin) | Python | 暂无简介 |
 | [SUDOKU_FINAL_PROJECT](https://github.com/yamakawanin/SUDOKU_FINAL_PROJECT) | Python | 26春季学期算法与程序设计大作业 |
 | [sensor](https://github.com/yamakawanin/sensor) | Python | 26北师大春传感器作业 |
 | [yamakawa-code](https://github.com/yamakawanin/yamakawa-code) | TypeScript | 暂无简介 |

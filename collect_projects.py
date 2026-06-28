@@ -54,9 +54,10 @@ def api_get(url: str, token: str) -> list[dict]:
 def fetch_repositories(config: dict) -> list[dict]:
     username = config["github_username"]
     token = os.environ.get("GITHUB_TOKEN", "")
-    # The authenticated endpoint can include private repositories. They are hidden
-    # from a public README unless explicitly enabled in the config.
-    if token:
+    # A personal token can include private repositories when explicitly enabled.
+    # GitHub Actions' built-in token is repository-scoped, so public indexes must
+    # keep using the account endpoint even when that token is present.
+    if token and config.get("include_private", False):
         base = "https://api.github.com/user/repos?affiliation=owner"
     else:
         base = f"https://api.github.com/users/{username}/repos?"
