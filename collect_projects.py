@@ -266,15 +266,22 @@ def sync(push: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="自动收集 GitHub 项目并更新 README")
-    parser.add_argument("--sync", action="store_true", help="更新并提交 README")
-    parser.add_argument("--push", action="store_true", help="更新、提交并推送")
+    action = parser.add_mutually_exclusive_group()
+    action.add_argument(
+        "--commit",
+        "--sync",
+        dest="commit",
+        action="store_true",
+        help="更新并提交 README（--sync 是兼容别名）",
+    )
+    action.add_argument("--push", action="store_true", help="更新、提交并推送")
     args = parser.parse_args()
     config = load_config()
     repositories = fetch_repositories(config)
     contributions = fetch_contributions(config["github_username"])
     write_contribution_chart(contributions)
     update_readme(repositories)
-    if args.sync or args.push:
+    if args.commit or args.push:
         sync(args.push)
     print(f"已从 GitHub 收集 {len(repositories)} 个项目并更新 README")
 
