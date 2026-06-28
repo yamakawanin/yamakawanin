@@ -275,7 +275,16 @@ def main() -> None:
         help="更新并提交 README（--sync 是兼容别名）",
     )
     action.add_argument("--push", action="store_true", help="更新、提交并推送")
+    action.add_argument(
+        "--upload",
+        action="store_true",
+        help="直接提交并推送现有 README 和曲线图，不重新收集数据",
+    )
     args = parser.parse_args()
+    if args.upload:
+        sync(push=True)
+        print("已提交并上传当前 README 和贡献曲线图")
+        return
     config = load_config()
     repositories = fetch_repositories(config)
     contributions = fetch_contributions(config["github_username"])
