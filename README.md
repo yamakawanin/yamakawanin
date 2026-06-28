@@ -1,7 +1,5 @@
 # Hi, I'm yamakawanin 👋
 
-这是我的 GitHub 项目索引。列表每天自动刷新，也可以在本机随时手动更新。
-
 ## 最近一年 GitHub 提交曲线
 
 ![最近一年 GitHub 贡献曲线](assets/contributions.svg)
@@ -9,7 +7,7 @@
 ## 我的项目
 
 <!-- PROJECTS:START -->
-_自动收集 7 个 GitHub 项目；最后更新：2026-06-29 00:54 CST_
+_自动收集 7 个 GitHub 项目；最后更新：2026-06-29 00:57 CST_
 
 | 项目 | 技术 | 简介 |
 | --- | --- | --- |
