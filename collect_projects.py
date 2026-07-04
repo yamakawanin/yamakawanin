@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import html
 import json
 import os
@@ -22,7 +21,7 @@ ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / ".project-index.json"
 README_PATH = ROOT / "README.md"
 CHART_PATH = ROOT / "assets" / "contributions.svg"
-FONT_PATH = ROOT / "assets" / "kangxi-subset.ttf"
+GLYPHS_PATH = ROOT / "assets" / "kangxi-glyphs.json"
 BEIJING_TIME = ZoneInfo("Asia/Shanghai")
 START = "<!-- PROJECTS:START -->"
 END = "<!-- PROJECTS:END -->"
@@ -102,6 +101,12 @@ def fetch_repositories(config: dict) -> list[dict]:
         and (include_archived or not repo.get("archived"))
         and (include_private or not repo.get("private"))
     ]
+    if include_private and not any(repo.get("private") for repo in filtered):
+        raise SystemExit(
+            "已启用私有项目，但 PROFILE_TOKEN 未返回任何私有仓库。"
+            "请确认 Fine-grained token 的 Resource owner 为当前账号，"
+            "Repository access 为 All repositories；为避免清空私有项目，本次未更新 README。"
+        )
     return sorted(filtered, key=lambda repo: repo.get("pushed_at") or "", reverse=True)
 
 
@@ -138,9 +143,37 @@ def fetch_contributions(username: str) -> list[tuple[date, int]]:
     ]
 
 
+def vector_text(
+    font: dict,
+    text: str,
+    x: float,
+    y: float,
+    size: int,
+    css_class: str,
+    anchor: str = "start",
+) -> str:
+    """Render text as outlines so GitHub cannot substitute another font."""
+    glyphs = font["glyphs"]
+    advance = sum(glyphs[char]["advance"] for char in text)
+    offset = {"start": 0, "middle": advance / 2, "end": advance}[anchor]
+    cursor = 0
+    paths = []
+    for char in text:
+        glyph = glyphs[char]
+        if glyph["path"]:
+            paths.append(f'<path d="{glyph["path"]}" transform="translate({cursor} 0)"/>')
+        cursor += glyph["advance"]
+    scale = size / font["units_per_em"]
+    return (
+        f'<g class="{css_class}" transform="translate({x:.1f} {y:.1f}) '
+        f'scale({scale:.8f} {-scale:.8f}) translate({-offset:.1f} 0)">'
+        f'{"".join(paths)}</g>'
+    )
+
+
 def write_contribution_chart(days: list[tuple[date, int]]) -> None:
     """Render weekly contribution totals as a self-contained SVG line chart."""
-    font_data = base64.b64encode(FONT_PATH.read_bytes()).decode("ascii")
+    font = json.loads(GLYPHS_PATH.read_text(encoding="utf-8"))
     weeks: list[tuple[date, int]] = []
     for index in range(0, len(days), 7):
         chunk = days[index : index + 7]
@@ -172,7 +205,7 @@ def write_contribution_chart(days: list[tuple[date, int]]) -> None:
         grid.append(
             f'<line x1="{left}" y1="{y:.1f}" x2="{width-right}" y2="{y:.1f}" '
             'class="grid"/>'
-            f'<text x="{left-10}" y="{y+4:.1f}" text-anchor="end" class="label">{value}</text>'
+            + vector_text(font, str(value), left - 10, y + 4, 12, "label", "end")
         )
 
     month_labels = []
@@ -181,8 +214,7 @@ def write_contribution_chart(days: list[tuple[date, int]]) -> None:
         if day.month != previous_month:
             x = left + plot_width * index / max(1, len(weeks) - 1)
             month_labels.append(
-                f'<text x="{x:.1f}" y="{height-18}" text-anchor="middle" '
-                f'class="label">{day.strftime("%b")}</text>'
+                vector_text(font, day.strftime("%b"), x, height - 18, 12, "label", "middle")
             )
             previous_month = day.month
 
@@ -191,10 +223,8 @@ def write_contribution_chart(days: list[tuple[date, int]]) -> None:
 <title id="title">GitHub contributions over the last year</title>
 <desc id="desc">{total} public contributions, grouped by week.</desc>
 <style>
-  @font-face {{ font-family: "Kangxi"; src: url("data:font/ttf;base64,{font_data}") format("truetype"); }}
   .bg {{ fill: #ffffff; }} .grid {{ stroke: #d8dee4; stroke-width: 1; }}
-  .label {{ fill: #57606a; font: 12px "Kangxi",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
-  .title {{ fill: #24292f; font: 600 15px "Kangxi",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
+  .label {{ fill: #57606a; }} .title {{ fill: #24292f; }}
   .area {{ fill: #2da44e; opacity: .14; }} .line {{ fill: none; stroke: #2da44e; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }}
   @media (prefers-color-scheme: dark) {{
     .bg {{ fill: #0d1117; }} .grid {{ stroke: #30363d; }} .label {{ fill: #8b949e; }} .title {{ fill: #c9d1d9; }}
@@ -202,7 +232,7 @@ def write_contribution_chart(days: list[tuple[date, int]]) -> None:
   }}
 </style>
 <rect class="bg" width="100%" height="100%" rx="10"/>
-<text x="{left}" y="21" class="title">最近一年：{total} 次公开贡献（按周）</text>
+{vector_text(font, f"最近一年：{total} 次公开贡献（按周）", left, 21, 15, "title")}
 {''.join(grid)}
 <path d="{area}" class="area"/>
 <polyline points="{point_text}" class="line"/>
