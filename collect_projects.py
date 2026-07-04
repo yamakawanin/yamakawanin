@@ -4,22 +4,26 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import html
 import json
 import os
 import re
 import subprocess
 import sys
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / ".project-index.json"
 README_PATH = ROOT / "README.md"
 CHART_PATH = ROOT / "assets" / "contributions.svg"
+FONT_PATH = ROOT / "assets" / "kangxi-subset.ttf"
+BEIJING_TIME = ZoneInfo("Asia/Shanghai")
 START = "<!-- PROJECTS:START -->"
 END = "<!-- PROJECTS:END -->"
 
@@ -103,7 +107,7 @@ def fetch_repositories(config: dict) -> list[dict]:
 
 def fetch_contributions(username: str) -> list[tuple[date, int]]:
     """Fetch exact daily public contribution counts for the trailing 365 days."""
-    today = date.today()
+    today = datetime.now(BEIJING_TIME).date()
     first_day = today - timedelta(days=364)
     headers = {
         "Accept": "text/html",
@@ -136,6 +140,7 @@ def fetch_contributions(username: str) -> list[tuple[date, int]]:
 
 def write_contribution_chart(days: list[tuple[date, int]]) -> None:
     """Render weekly contribution totals as a self-contained SVG line chart."""
+    font_data = base64.b64encode(FONT_PATH.read_bytes()).decode("ascii")
     weeks: list[tuple[date, int]] = []
     for index in range(0, len(days), 7):
         chunk = days[index : index + 7]
@@ -186,9 +191,10 @@ def write_contribution_chart(days: list[tuple[date, int]]) -> None:
 <title id="title">GitHub contributions over the last year</title>
 <desc id="desc">{total} public contributions, grouped by week.</desc>
 <style>
+  @font-face {{ font-family: "Kangxi"; src: url("data:font/ttf;base64,{font_data}") format("truetype"); }}
   .bg {{ fill: #ffffff; }} .grid {{ stroke: #d8dee4; stroke-width: 1; }}
-  .label {{ fill: #57606a; font: 12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
-  .title {{ fill: #24292f; font: 600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
+  .label {{ fill: #57606a; font: 12px "Kangxi",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
+  .title {{ fill: #24292f; font: 600 15px "Kangxi",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
   .area {{ fill: #2da44e; opacity: .14; }} .line {{ fill: none; stroke: #2da44e; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }}
   @media (prefers-color-scheme: dark) {{
     .bg {{ fill: #0d1117; }} .grid {{ stroke: #30363d; }} .label {{ fill: #8b949e; }} .title {{ fill: #c9d1d9; }}
@@ -212,7 +218,7 @@ def escape(value: object) -> str:
 
 
 def render(repositories: list[dict]) -> str:
-    updated = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    updated = datetime.now(BEIJING_TIME).strftime("%Y-%m-%d %H:%M CST")
     lines = [
         f"_自动收集 {len(repositories)} 个 GitHub 项目；最后更新：{updated}_",
         "",
