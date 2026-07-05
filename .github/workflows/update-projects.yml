@@ -3,8 +3,8 @@ name: Update GitHub projects
 on:
   workflow_dispatch:
   schedule:
-    # GitHub Actions cron uses UTC; 00:00 UTC is 08:00 in Beijing.
-    - cron: "0 0 * * *"
+    # GitHub Actions cron uses UTC; 03:11 UTC is 11:11 in Beijing/Singapore.
+    - cron: "11 3 * * *"
 
 permissions:
   contents: write
