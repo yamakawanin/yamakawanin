@@ -7,12 +7,12 @@
 ## 我的项目
 
 <!-- PROJECTS:START -->
-_自动收集 10 个 GitHub 项目；最后更新：2026-07-22 12:20 CST_
+_自动收集 10 个 GitHub 项目；最后更新：2026-07-23 12:19 CST_
 
 | 项目 | 技术 | 简介 |
 | --- | --- | --- |
-| 🔒 yamakawanins-blog | — | 私有项目 |
 | [yamakawanin](https://github.com/yamakawanin/yamakawanin) | Python | 暂无简介 |
+| 🔒 yamakawanins-blog | — | 私有项目 |
 | [fonts](https://github.com/yamakawanin/fonts) | HTML | some Chinese fonts for frontend |
 | 🔒 CG-Lab | — | 私有项目 |
 | [SUDOKU_FINAL_PROJECT](https://github.com/yamakawanin/SUDOKU_FINAL_PROJECT) | Python | 26春季学期算法与程序设计大作业 |
