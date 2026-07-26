@@ -7,12 +7,12 @@
 ## 我的项目
 
 <!-- PROJECTS:START -->
-_自动收集 11 个 GitHub 项目；最后更新：2026-07-25 12:18 CST_
+_自动收集 11 个 GitHub 项目；最后更新：2026-07-26 12:21 CST_
 
 | 项目 | 技术 | 简介 |
 | --- | --- | --- |
-| [hermes-agent (Fork)](https://github.com/yamakawanin/hermes-agent) | — | The agent that grows with you |
 | [yamakawanin](https://github.com/yamakawanin/yamakawanin) | Python | 暂无简介 |
+| [hermes-agent (Fork)](https://github.com/yamakawanin/hermes-agent) | — | The agent that grows with you |
 | 🔒 yamakawanins-blog | — | 私有项目 |
 | [fonts](https://github.com/yamakawanin/fonts) | HTML | some Chinese fonts for frontend |
 | 🔒 CG-Lab | — | 私有项目 |
