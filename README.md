@@ -7,13 +7,14 @@
 ## 我的项目
 
 <!-- PROJECTS:START -->
-_自动收集 11 个 GitHub 项目；最后更新：2026-07-28 12:18 CST_
+_自动收集 12 个 GitHub 项目；最后更新：2026-07-29 12:19 CST_
 
 | 项目 | 技术 | 简介 |
 | --- | --- | --- |
+| 🔒 yamakawanins-blog | — | 私有项目 |
+| [mac_blackhole_trash](https://github.com/yamakawanin/mac_blackhole_trash) | Swift | 暂无简介 |
 | [yamakawanin](https://github.com/yamakawanin/yamakawanin) | Python | 暂无简介 |
 | [hermes-agent (Fork)](https://github.com/yamakawanin/hermes-agent) | — | The agent that grows with you |
-| 🔒 yamakawanins-blog | — | 私有项目 |
 | [fonts](https://github.com/yamakawanin/fonts) | HTML | some Chinese fonts for frontend |
 | 🔒 CG-Lab | — | 私有项目 |
 | [SUDOKU_FINAL_PROJECT](https://github.com/yamakawanin/SUDOKU_FINAL_PROJECT) | Python | 26春季学期算法与程序设计大作业 |
