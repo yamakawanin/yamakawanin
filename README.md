@@ -1,5 +1,5 @@
 # Hi, I'm yamakawanin 👋
-## [My personal blog](www.yamakawanin.tech)
+[My personal blog](www.yamakawanin.tech)
 <p>
   <a href="./sponsor/">
     <img src="https://img.shields.io/badge/%E8%B5%9E%E5%8A%A9%E6%88%91-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="赞助我" />
