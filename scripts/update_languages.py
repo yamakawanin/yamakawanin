@@ -15,10 +15,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
-README_PATH = ROOT / "README.md"
 OUTPUT_PATH = ROOT / "generated" / "languages.md"
-START = "<!-- LANGUAGES:START -->"
-END = "<!-- LANGUAGES:END -->"
 API_ROOT = "https://api.github.com"
 
 
@@ -83,22 +80,10 @@ def render_section(projects: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def replace_marked_section(readme: str, section: str) -> str:
-    if readme.count(START) != 1 or readme.count(END) != 1:
-        raise ValueError("README language markers are missing or duplicated; refusing to overwrite.")
-    before, remainder = readme.split(START, 1)
-    _old, after = remainder.split(END, 1)
-    return f"{before}{START}\n{section}\n{END}{after}"
-
-
-def update_files(section: str) -> bool:
-    original = README_PATH.read_text(encoding="utf-8")
-    updated = replace_marked_section(original, section)
+def update_generated_file(section: str) -> bool:
     generated = section + "\n"
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    changed = updated != original or not OUTPUT_PATH.exists() or OUTPUT_PATH.read_text(encoding="utf-8") != generated
-    if updated != original:
-        README_PATH.write_text(updated, encoding="utf-8")
+    changed = not OUTPUT_PATH.exists() or OUTPUT_PATH.read_text(encoding="utf-8") != generated
     OUTPUT_PATH.write_text(generated, encoding="utf-8")
     return changed
 
@@ -115,9 +100,7 @@ def run_self_test() -> None:
     assert [repo["name"] for repo in repositories] == ["C++ tools"]
     section = render_section([{"name": "C++ tools", "owner": "alice", "languages": fetch_languages("alice", "C++ tools", request)}])
     assert "60.0%" in section and "40.0%" in section and "C%2B%2B%20tools" in section
-    template = f"before\n{START}\nold\n{END}\nafter\n"
-    assert replace_marked_section(replace_marked_section(template, section), section) == replace_marked_section(template, section)
-    print("Self-test passed: pagination, filtering, encoding, percentages, and marker replacement.")
+    print("Self-test passed: pagination, filtering, encoding, and percentages.")
 
 
 def main() -> None:
@@ -138,7 +121,7 @@ def main() -> None:
         if not isinstance(name, str) or not name:
             raise GitHubApiError("A repository response did not include a valid name.")
         projects.append({"name": name, "owner": args.username, "languages": fetch_languages(args.username, name, request)})
-    changed = update_files(render_section(projects))
+    changed = update_generated_file(render_section(projects))
     print(f"Analyzed {len(projects)} repositories; {'updated' if changed else 'no content changes'}.")
 
 
