@@ -1,6 +1,6 @@
 ## 语言统计
 
-_生成日期：2026-10-19（仅统计公开、非 Fork、非归档项目；不含本 Profile 仓库）。_
+_生成日期：2026-10-26（仅统计公开、非 Fork、非归档项目；不含本 Profile 仓库）。_
 
 | 语言 | 占比 | 检测字节数 |
 | --- | ---: | ---: |
@@ -19,6 +19,7 @@ _生成日期：2026-10-19（仅统计公开、非 Fork、非归档项目；不�
 | --- | --- | --- |
 | [cognitive-psychology](https://github.com/yamakawanin/cognitive-psychology) | HTML | HTML 88%, Python 12% |
 | [fonts](https://github.com/yamakawanin/fonts) | HTML | HTML 71%, Python 29% |
+| [Learner-Modeling](https://github.com/yamakawanin/Learner-Modeling) | — | 未检测到编程语言 |
 | [mac_blackhole_trash](https://github.com/yamakawanin/mac_blackhole_trash) | Swift | Swift 78%, Metal 21%, C++ 1% |
 | [MediaHarbor](https://github.com/yamakawanin/MediaHarbor) | — | 未检测到编程语言 |
 | [Python-scripts-to-download-videos-audio](https://github.com/yamakawanin/Python-scripts-to-download-videos-audio) | Python | Python 100% |
